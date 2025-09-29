@@ -2,8 +2,9 @@ import csv
 import os
 
 # Define o nome do arquivo e os cabeçalhos das colunas
-NOME_ARQUIVO = 'contatos.csv'
-CABECALHO = ['id', 'nome', 'email', 'telefone']
+NOME_ARQUIVO = 'produtos.csv'
+# Cabeçalho atualizado para produtos com o novo campo 'Quantidade'
+CABECALHO = ['Codigo', 'Nome', 'Descricao', 'Categoria', 'UnidadeMedida', 'EstoqueMin', 'Quantidade']
 
 def inicializar_arquivo():
     """Cria o arquivo CSV com o cabeçalho se ele não existir."""
@@ -12,161 +13,180 @@ def inicializar_arquivo():
             escritor = csv.writer(arquivo_csv)
             escritor.writerow(CABECALHO)
 
-def obter_proximo_id():
-    """Lê o arquivo e retorna o próximo ID disponível."""
+def obter_proximo_codigo():
+    """Lê o arquivo e retorna o próximo Código disponível."""
     try:
         with open(NOME_ARQUIVO, 'r', newline='', encoding='utf-8') as arquivo_csv:
             leitor = csv.reader(arquivo_csv)
             # Pula o cabeçalho
             next(leitor, None)
-            ultimo_id = 0
+            ultimo_codigo = 0
             for linha in leitor:
-                if linha: # Verifica se a linha não está vazia
-                    ultimo_id = int(linha[0])
-            return ultimo_id + 1
+                if linha:  # Verifica se a linha não está vazia
+                    ultimo_codigo = int(linha[0])
+            return ultimo_codigo + 1
     except (IOError, StopIteration):
         return 1
 
 # --- CREATE ---
-def adicionar_contato():
-    """Adiciona um novo contato ao arquivo CSV."""
-    print("\n--- Adicionar Novo Contato ---")
-    nome = input("Digite o nome: ")
-    email = input("Digite o email: ")
-    telefone = input("Digite o telefone: ")
-    
-    novo_id = obter_proximo_id()
-    
+def adicionar_produto():
+    """Adiciona um novo produto ao arquivo CSV."""
+    print("\n--- Adicionar Novo Produto ---")
+    nome = input("Digite o nome do produto: ")
+    descricao = input("Digite a descrição: ")
+    categoria = input("Digite a categoria: ")
+    unidade_medida = input("Digite a unidade de medida: ")
+    estoque_min = input("Digite o estoque mínimo: ")
+    # Adicionada a pergunta para a nova coluna 'Quantidade'
+    quantidade = input("Digite a quantidade inicial em estoque: ")
+
+    novo_codigo = obter_proximo_codigo()
+
     with open(NOME_ARQUIVO, 'a', newline='', encoding='utf-8') as arquivo_csv:
         escritor = csv.writer(arquivo_csv)
-        escritor.writerow([novo_id, nome, email, telefone])
-        
-    print("\n✅ Contato adicionado com sucesso!")
+        # Adicionado o novo campo 'quantidade' na escrita da linha
+        escritor.writerow([novo_codigo, nome, descricao, categoria, unidade_medida, estoque_min, quantidade])
+
+    print("\n✅ Produto adicionado com sucesso!")
 
 # --- READ ---
-def listar_contatos():
-    """Lê e exibe todos os contatos do arquivo CSV."""
-    print("\n--- Lista de Contatos ---")
+def listar_produtos():
+    """Lê e exibe todos os produtos do arquivo CSV."""
+    print("\n--- Lista de Produtos ---")
     try:
         with open(NOME_ARQUIVO, 'r', newline='', encoding='utf-8') as arquivo_csv:
-            # Usar DictReader para facilitar a leitura por nome da coluna
             leitor = csv.DictReader(arquivo_csv)
-            
-            # Verifica se há contatos para listar
-            contatos_existem = False
-            for contato in leitor:
-                print(f"ID: {contato['id']}, Nome: {contato['nome']}, Email: {contato['email']}, Telefone: {contato['telefone']}")
-                contatos_existem = True
-            
-            if not contatos_existem:
-                print("Nenhum contato cadastrado.")
+
+            produtos_existem = False
+            for produto in leitor:
+                print(
+                    f"Código: {produto['Codigo']}, "
+                    f"Nome: {produto['Nome']}, "
+                    f"Descrição: {produto['Descricao']}, "
+                    f"Categoria: {produto['Categoria']}, "
+                    f"Un. Medida: {produto['UnidadeMedida']}, "
+                    f"Estoque Mín.: {produto['EstoqueMin']}, "
+                    # Adicionada a exibição do novo campo 'Quantidade'
+                    f"Quantidade: {produto['Quantidade']}"
+                )
+                produtos_existem = True
+
+            if not produtos_existem:
+                print("Nenhum produto cadastrado.")
 
     except FileNotFoundError:
-        print("Nenhum contato cadastrado.")
+        print("Nenhum produto cadastrado.")
 
 # --- UPDATE ---
-def atualizar_contato():
-    """Atualiza as informações de um contato existente."""
-    print("\n--- Atualizar Contato ---")
-    listar_contatos()
-    id_para_atualizar = input("\nDigite o ID do contato que deseja atualizar: ")
-    
+def atualizar_produto():
+    """Atualiza as informações de um produto existente."""
+    print("\n--- Atualizar Produto ---")
+    listar_produtos()
+    codigo_para_atualizar = input("\nDigite o Código do produto que deseja atualizar: ")
+
     try:
-        # Lê todos os contatos para a memória
-        contatos = []
+        produtos = []
         with open(NOME_ARQUIVO, 'r', newline='', encoding='utf-8') as arquivo_csv:
             leitor = csv.DictReader(arquivo_csv)
             for linha in leitor:
-                contatos.append(linha)
+                produtos.append(linha)
 
-        contato_encontrado = False
-        for contato in contatos:
-            if contato['id'] == id_para_atualizar:
+        produto_encontrado = False
+        for produto in produtos:
+            if produto['Codigo'] == codigo_para_atualizar:
                 print("\nDigite os novos dados (deixe em branco para manter o valor atual):")
-                
-                novo_nome = input(f"Nome atual: {contato['nome']}\nNovo nome: ")
-                novo_email = input(f"Email atual: {contato['email']}\nNovo email: ")
-                novo_telefone = input(f"Telefone atual: {contato['telefone']}\nNovo telefone: ")
-                
+
+                novo_nome = input(f"Nome atual: {produto['Nome']}\nNovo nome: ")
+                nova_descricao = input(f"Descrição atual: {produto['Descricao']}\nNova descrição: ")
+                nova_categoria = input(f"Categoria atual: {produto['Categoria']}\nNova categoria: ")
+                nova_unidade_medida = input(f"Unidade de Medida atual: {produto['UnidadeMedida']}\nNova Un. Medida: ")
+                novo_estoque_min = input(f"Estoque Mín. atual: {produto['EstoqueMin']}\nNovo Estoque Mín.: ")
+                # Adicionada a atualização para o novo campo 'Quantidade'
+                nova_quantidade = input(f"Quantidade atual: {produto['Quantidade']}\nNova quantidade: ")
+
                 if novo_nome:
-                    contato['nome'] = novo_nome
-                if novo_email:
-                    contato['email'] = novo_email
-                if novo_telefone:
-                    contato['telefone'] = novo_telefone
-                    
-                contato_encontrado = True
+                    produto['Nome'] = novo_nome
+                if nova_descricao:
+                    produto['Descricao'] = nova_descricao
+                if nova_categoria:
+                    produto['Categoria'] = nova_categoria
+                if nova_unidade_medida:
+                    produto['UnidadeMedida'] = nova_unidade_medida
+                if novo_estoque_min:
+                    produto['EstoqueMin'] = novo_estoque_min
+                # Adicionada a lógica de atualização para 'Quantidade'
+                if nova_quantidade:
+                    produto['Quantidade'] = nova_quantidade
+
+                produto_encontrado = True
                 break
-        
-        if contato_encontrado:
-            # Reescreve o arquivo inteiro com os dados atualizados
+
+        if produto_encontrado:
             with open(NOME_ARQUIVO, 'w', newline='', encoding='utf-8') as arquivo_csv:
                 escritor = csv.DictWriter(arquivo_csv, fieldnames=CABECALHO)
                 escritor.writeheader()
-                escritor.writerows(contatos)
-            print("\n✅ Contato atualizado com sucesso!")
+                escritor.writerows(produtos)
+            print("\n✅ Produto atualizado com sucesso!")
         else:
-            print("\n❌ ID não encontrado.")
-            
+            print("\n❌ Código não encontrado.")
+
     except FileNotFoundError:
-        print("\n❌ Nenhum contato cadastrado para atualizar.")
+        print("\n❌ Nenhum produto cadastrado para atualizar.")
 
 # --- DELETE ---
-def deletar_contato():
-    """Remove um contato do arquivo CSV pelo ID."""
-    print("\n--- Deletar Contato ---")
-    listar_contatos()
-    id_para_deletar = input("\nDigite o ID do contato que deseja deletar: ")
-    
+def deletar_produto():
+    """Remove um produto do arquivo CSV pelo Código."""
+    print("\n--- Deletar Produto ---")
+    listar_produtos()
+    codigo_para_deletar = input("\nDigite o Código do produto que deseja deletar: ")
+
     try:
-        # Lê todos os contatos, exceto o que será deletado
-        contatos_mantidos = []
-        contato_deletado = False
+        produtos_mantidos = []
+        produto_deletado = False
         with open(NOME_ARQUIVO, 'r', newline='', encoding='utf-8') as arquivo_csv:
             leitor = csv.DictReader(arquivo_csv)
-            for contato in leitor:
-                if contato['id'] != id_para_deletar:
-                    contatos_mantidos.append(contato)
+            for produto in leitor:
+                if produto['Codigo'] != codigo_para_deletar:
+                    produtos_mantidos.append(produto)
                 else:
-                    contato_deletado = True
-        
-        if contato_deletado:
-            # Reescreve o arquivo apenas com os contatos mantidos
+                    produto_deletado = True
+
+        if produto_deletado:
             with open(NOME_ARQUIVO, 'w', newline='', encoding='utf-8') as arquivo_csv:
                 escritor = csv.DictWriter(arquivo_csv, fieldnames=CABECALHO)
                 escritor.writeheader()
-                escritor.writerows(contatos_mantidos)
-            print("\n✅ Contato deletado com sucesso!")
+                escritor.writerows(produtos_mantidos)
+            print("\n✅ Produto deletado com sucesso!")
         else:
-            print("\n❌ ID não encontrado.")
-            
+            print("\n❌ Código não encontrado.")
+
     except FileNotFoundError:
-        print("\n❌ Nenhum contato cadastrado para deletar.")
+        print("\n❌ Nenhum produto cadastrado para deletar.")
 
 
 # --- MENU PRINCIPAL ---
 def main():
     """Função principal que exibe o menu e gerencia as operações."""
     inicializar_arquivo()
-    
+
     while True:
-        print("\n--- Sistema de Gerenciamento de Contatos (CSV) ---")
-        print("1. Adicionar Contato")
-        print("2. Listar Contatos")
-        print("3. Atualizar Contato")
-        print("4. Deletar Contato")
+        print("\n--- Sistema de Gerenciamento de Produtos (CSV) ---")
+        print("1. Adicionar Produto")
+        print("2. Listar Produtos")
+        print("3. Atualizar Produto")
+        print("4. Deletar Produto")
         print("5. Sair")
-        
+
         escolha = input("Escolha uma opção: ")
-        
+
         if escolha == '1':
-            adicionar_contato()
+            adicionar_produto()
         elif escolha == '2':
-            listar_contatos()
+            listar_produtos()
         elif escolha == '3':
-            atualizar_contato()
+            atualizar_produto()
         elif escolha == '4':
-            deletar_contato()
+            deletar_produto()
         elif escolha == '5':
             print("\nSaindo do sistema. Até logo!")
             break
@@ -176,5 +196,3 @@ def main():
 # Garante que o programa principal só será executado quando este script for o arquivo principal
 if __name__ == "__main__":
     main()
-
-    
