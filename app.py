@@ -1,28 +1,14 @@
-# app.py
-
 import os
 import csv
 
-# Importa os módulos que criamos
 from modulos import gestao_produtos
 from modulos import movimentacao_estoque
 
-def inicializar_arquivo():
-    """Cria o arquivo CSV com o cabeçalho se ele não existir."""
-    caminho = gestao_produtos.CAMINHO_ARQUIVO
-    cabecalho = gestao_produtos.CABECALHO
-    
-    # Cria a pasta 'dados' se ela não existir
-    os.makedirs('dados', exist_ok=True)
 
-    if not os.path.exists(caminho):
-        with open(caminho, 'w', newline='', encoding='utf-8') as arquivo_csv:
-            escritor = csv.writer(arquivo_csv)
-            escritor.writerow(cabecalho)
 
 def main():
-    """Função principal que exibe o menu e gerencia as operações."""
-    inicializar_arquivo()
+    gestao_produtos.inicializar_arquivo()
+    movimentacao_estoque.inicializar_estoque_csv()
 
     while True:
         print("\n--- Sistema de Controle de Estoque Hospitalar ---")
@@ -33,7 +19,7 @@ def main():
         print("4. Deletar Produto")
         print("\n[ Movimentação de Estoque ]")
         print("5. Registrar ENTRADA de produto")
-        print("6. Registrar SAÍDA de produto") # <- A FUNÇÃO DO SEU GRUPO
+        print("6. Registrar SAÍDA de produto")
         print("\n[ Opções ]")
         print("0. Sair")
 
@@ -48,8 +34,10 @@ def main():
         elif escolha == '4':
             gestao_produtos.deletar_produto()
         elif escolha == '5':
+            gestao_produtos.listar_produtos()
             movimentacao_estoque.registrar_entrada()
         elif escolha == '6':
+            gestao_produtos.listar_produtos()
             movimentacao_estoque.registrar_saida() # Chamando a função do seu grupo
         elif escolha == '0':
             print("\nSaindo do sistema. Até logo!")

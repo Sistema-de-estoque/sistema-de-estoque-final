@@ -1,9 +1,19 @@
 import csv 
 import os 
+from modulos.movimentacao_estoque import calcular_total_estoque
 
 CAMINHO_ARQUIVO = os.path.join('dados', 'produtos.csv')
 
 CABECALHO = ['Codigo', 'Nome', 'Descricao', 'Categoria', 'UnidadeMedida', 'EstoqueMin', 'Quantidade']
+
+def inicializar_arquivo():
+
+    os.makedirs('dados', exist_ok=True)
+
+    if not os.path.exists(CAMINHO_ARQUIVO):
+        with open(CAMINHO_ARQUIVO, 'w', newline='', encoding='utf-8') as arquivo_csv:
+            escritor = csv.writer(arquivo_csv)
+            escritor.writerow(CABECALHO)
 
 def adicionar_produto():
     """Adiciona um novo produto ao arquivo CSV."""
@@ -34,6 +44,8 @@ def listar_produtos():
 
             produtos_existem = False
             for produto in leitor:
+                codigo_atual = produto['Codigo']
+                quantidade_real = calcular_total_estoque(codigo_atual)
                 print(
                     f"Código: {produto['Codigo']}, "
                     f"Nome: {produto['Nome']}, "
@@ -41,8 +53,7 @@ def listar_produtos():
                     f"Categoria: {produto['Categoria']}, "
                     f"Un. Medida: {produto['UnidadeMedida']}, "
                     f"Estoque Mín.: {produto['EstoqueMin']}, "
-                    # Adicionada a exibição do novo campo 'Quantidade'
-                    f"Quantidade: {produto['Quantidade']}"
+                    f"Quantidade em estoque: {quantidade_real}"
                 )
                 produtos_existem = True
 
