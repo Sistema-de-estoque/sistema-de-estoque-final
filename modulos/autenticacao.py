@@ -4,12 +4,15 @@ import os
 import hmac # Fornece comparações seguras 
 import uuid  # Importado para gerar IDs únicos
 
-usuariosCsv = 'usuarios.csv'
+usuariosCsv = os.path.join('dados','usuarios.csv')
+
 # Define o cabeçalho do arquivo CSV
 CSV_HEADER = ['id', 'nome', 'sal', 'hash_senha']
 
 # Função para garantir que o arquivo CSV exista e tenha o cabeçalho
 def inicializar_csv():
+    os.makedirs('dados', exist_ok=True)
+
     if not os.path.exists(usuariosCsv):
         with open(usuariosCsv, 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
