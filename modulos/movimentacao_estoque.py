@@ -163,3 +163,11 @@ def calcular_total_estoque(codigo_produto):
         return 0
     
     return total
+
+def ler_todos_lotes():
+    """Lê e retorna todos os lotes do arquivo estoque.csv."""
+    try:
+        with open(CAMINHO_ARQUIVO_ESTOQUE, 'r', newline='', encoding='utf-8') as f:
+            return list(csv.DictReader(f))
+    except FileNotFoundError:
+        return []
