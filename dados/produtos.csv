@@ -1,5 +1,7 @@
-Codigo,Nome,Descricao,Categoria,UnidadeMedida,EstoqueMin,Quantidade
-1,seringa,produto perfurante,perfurantes,km,50,100
+Codigo,Nome,Descricao,Categoria,UnidadeMedida,EstoqueMin
+1,seringa,produto perfurante,perfurantes,km,50
 
 
 
+
+2,Dipirona,remedio,analgesico,mg,10,10
