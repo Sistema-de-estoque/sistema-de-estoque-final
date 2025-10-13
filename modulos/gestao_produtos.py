@@ -15,6 +15,17 @@ def inicializar_arquivo():
             escritor = csv.writer(arquivo_csv)
             escritor.writerow(CABECALHO)
 
+def verificar_produto_existe(codigo):
+    try:
+        with open(CAMINHO_ARQUIVO, 'r', newline='', encoding='utf-8') as f:
+            leitor = csv.DictReader(f)
+            for produto in leitor:
+                if produto['Codigo'] == codigo:
+                    return True 
+            return False 
+    except FileNotFoundError:
+        return False 
+
 def adicionar_produto():
     """Adiciona um novo produto ao arquivo CSV."""
     print("\n--- Adicionar Novo Produto ---")
@@ -23,7 +34,7 @@ def adicionar_produto():
     categoria = input("Digite a categoria: ")
     unidade_medida = input("Digite a unidade de medida: ")
     estoque_min = input("Digite o estoque mínimo: ")
-    
+
     novo_codigo = obter_proximo_codigo()
 
     with open(CAMINHO_ARQUIVO, 'a', newline='', encoding='utf-8') as arquivo_csv:
