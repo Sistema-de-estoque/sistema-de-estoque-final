@@ -4,7 +4,7 @@ from modulos.movimentacao_estoque import calcular_total_estoque
 
 CAMINHO_ARQUIVO = os.path.join('dados', 'produtos.csv')
 
-CABECALHO = ['Codigo', 'Nome', 'Descricao', 'Categoria', 'UnidadeMedida', 'EstoqueMin', 'Quantidade']
+CABECALHO = ['Codigo', 'Nome', 'Descricao', 'Categoria', 'UnidadeMedida', 'EstoqueMin']
 
 def inicializar_arquivo():
 
@@ -15,6 +15,17 @@ def inicializar_arquivo():
             escritor = csv.writer(arquivo_csv)
             escritor.writerow(CABECALHO)
 
+def verificar_produto_existe(codigo):
+    try:
+        with open(CAMINHO_ARQUIVO, 'r', newline='', encoding='utf-8') as f:
+            leitor = csv.DictReader(f)
+            for produto in leitor:
+                if produto['Codigo'] == codigo:
+                    return True 
+            return False 
+    except FileNotFoundError:
+        return False 
+
 def adicionar_produto():
     """Adiciona um novo produto ao arquivo CSV."""
     print("\n--- Adicionar Novo Produto ---")
@@ -23,15 +34,13 @@ def adicionar_produto():
     categoria = input("Digite a categoria: ")
     unidade_medida = input("Digite a unidade de medida: ")
     estoque_min = input("Digite o estoque mínimo: ")
-    # Adicionada a pergunta para a nova coluna 'Quantidade'
-    quantidade = input("Digite a quantidade inicial em estoque: ")
 
     novo_codigo = obter_proximo_codigo()
 
     with open(CAMINHO_ARQUIVO, 'a', newline='', encoding='utf-8') as arquivo_csv:
         escritor = csv.writer(arquivo_csv)
-        # Adicionado o novo campo 'quantidade' na escrita da linha
-        escritor.writerow([novo_codigo, nome, descricao, categoria, unidade_medida, estoque_min, quantidade])
+        
+        escritor.writerow([novo_codigo, nome, descricao, categoria, unidade_medida, estoque_min])
 
     print("\n✅ Produto adicionado com sucesso!")
 
@@ -86,8 +95,6 @@ def atualizar_produto():
                 nova_categoria = input(f"Categoria atual: {produto['Categoria']}\nNova categoria: ")
                 nova_unidade_medida = input(f"Unidade de Medida atual: {produto['UnidadeMedida']}\nNova Un. Medida: ")
                 novo_estoque_min = input(f"Estoque Mín. atual: {produto['EstoqueMin']}\nNovo Estoque Mín.: ")
-                # Adicionada a atualização para o novo campo 'Quantidade'
-                nova_quantidade = input(f"Quantidade atual: {produto['Quantidade']}\nNova quantidade: ")
 
                 if novo_nome:
                     produto['Nome'] = novo_nome
@@ -99,9 +106,6 @@ def atualizar_produto():
                     produto['UnidadeMedida'] = nova_unidade_medida
                 if novo_estoque_min:
                     produto['EstoqueMin'] = novo_estoque_min
-                # Adicionada a lógica de atualização para 'Quantidade'
-                if nova_quantidade:
-                    produto['Quantidade'] = nova_quantidade
 
                 produto_encontrado = True
                 break
@@ -113,10 +117,10 @@ def atualizar_produto():
                 escritor.writerows(produtos)
             print("\n✅ Produto atualizado com sucesso!")
         else:
-            print("\n❌ Código não encontrado.")
+            print("\nCódigo não encontrado.")
 
     except FileNotFoundError:
-        print("\n❌ Nenhum produto cadastrado para atualizar.")
+        print("\nenhum produto cadastrado para atualizar.")
 
 def deletar_produto():
     """Remove um produto do arquivo CSV pelo Código."""
@@ -142,10 +146,10 @@ def deletar_produto():
                 escritor.writerows(produtos_mantidos)
             print("\n✅ Produto deletado com sucesso!")
         else:
-            print("\n❌ Código não encontrado.")
+            print("\nCódigo não encontrado.")
 
     except FileNotFoundError:
-        print("\n❌ Nenhum produto cadastrado para deletar.")
+        print("\nNenhum produto cadastrado para deletar.")
 
 
 def obter_proximo_codigo():
@@ -157,8 +161,15 @@ def obter_proximo_codigo():
             next(leitor, None)
             ultimo_codigo = 0
             for linha in leitor:
-                if linha:  # Verifica se a linha não está vazia
+                if linha:  
                     ultimo_codigo = int(linha[0])
             return ultimo_codigo + 1
     except (IOError, StopIteration):
         return 1
+
+def ler_todos_produtos():
+    try:
+        with open(CAMINHO_ARQUIVO, 'r', newline='', encoding='utf-8') as f:
+            return list(csv.DictReader(f))
+    except FileNotFoundError:
+        return []

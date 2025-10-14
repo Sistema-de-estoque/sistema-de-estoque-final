@@ -1,3 +1,5 @@
 # Arquivos de cache e bytecode do Python
 __pycache__/
 *.pyc
+# Ambiente virtual do Python
+.venv/

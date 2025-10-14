@@ -2,6 +2,7 @@ import csv
 import os
 from datetime import datetime
 
+
 CAMINHO_ARQUIVO_PRODUTOS = os.path.join('dados', 'produtos.csv')
 CAMINHO_ARQUIVO_ESTOQUE = os.path.join('dados', 'estoque.csv')
 CABECALHO_ESTOQUE = ['CodigoProduto', 'Lote', 'Quantidade', 'DataValidade']
@@ -13,8 +14,14 @@ def inicializar_estoque_csv():
             escritor.writerow(CABECALHO_ESTOQUE)
 
 def registrar_entrada():
+    from modulos.gestao_produtos import verificar_produto_existe 
     print("\n--- Registrar Entrada de lote no estoque ---")
     codigo = input("\nDigite o Código do produto que deseja dar entrada: ")
+    if not verificar_produto_existe(codigo):
+        print(f"\nERRO: Produto com código '{codigo}' não está cadastrado no sistema.")
+        print("Por favor, cadastre o produto primeiro antes de dar entrada no estoque.")
+        input("\nPressione Enter para voltar ao menu...")
+        return
     lote = input('Digite o número do lote:')
 
     while True: 
@@ -163,3 +170,11 @@ def calcular_total_estoque(codigo_produto):
         return 0
     
     return total
+
+def ler_todos_lotes():
+    """Lê e retorna todos os lotes do arquivo estoque.csv."""
+    try:
+        with open(CAMINHO_ARQUIVO_ESTOQUE, 'r', newline='', encoding='utf-8') as f:
+            return list(csv.DictReader(f))
+    except FileNotFoundError:
+        return []

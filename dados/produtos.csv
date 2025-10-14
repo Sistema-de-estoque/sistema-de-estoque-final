@@ -1,3 +1,4 @@
-Codigo,Nome,Descricao,Categoria,UnidadeMedida,EstoqueMin,Quantidade
-1,seringa,produto perfurante,perfurantes,km,50,55
-2,0,1,2,4,5,6
+Codigo,Nome,Descricao,Categoria,UnidadeMedida,EstoqueMin
+1,remedio,remedio para remedio,utilitarios,km,50
+2,naftalina,mata rato,ab,km,70
+
