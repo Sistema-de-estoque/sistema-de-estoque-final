@@ -4,6 +4,8 @@ import threading
 from modulos import gestao_produtos, movimentacao_estoque, autenticacao, relatorios, verificacao
 
 def main():
+    autenticacao.inicializar_csv()
+    autenticacao.RegistrarUsuario()
     tentativas_login = 3
     autenticado = False
     

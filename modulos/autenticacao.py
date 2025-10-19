@@ -7,7 +7,7 @@ import hmac
 import uuid
 
 usuariosCsv = os.path.join('dados','usuarios.csv')
-CSV_HEADER = ['id', 'nome', 'sal', 'hash_senha']
+CSV_HEADER = ['id', 'nome', 'sal', 'hash_senha', 'role']
 
 def inicializar_csv():
     os.makedirs('dados', exist_ok=True)
@@ -23,6 +23,7 @@ def RegistrarUsuario():
     print('\n----Registro de novo usuário----')
     NomeUsuario = input("Digite o nome do usuário: ")
     senha = input("Digite a senha: ")
+    role = 'user'
 
     try:
         with open(usuariosCsv, 'r', newline='', encoding='utf-8') as file:
