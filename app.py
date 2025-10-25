@@ -5,7 +5,7 @@ from modulos import gestao_produtos, movimentacao_estoque, autenticacao, relator
 
 def main():
     autenticacao.inicializar_csv()
-    autenticacao.RegistrarUsuario()
+    # autenticacao.RegistrarUsuario()
     tentativas_login = 3
     autenticado = False
     
@@ -35,8 +35,8 @@ def main():
             print("6. Registrar SAÍDA de produto")
             print("\n [Geração de Relatórios]")
             print("\n7. Relatório de inventário ")
-            print("\n7. Relatório de nível crítico ")
-            print("\n7. Relatório de produtos próximo ao vencimento ")
+            print("\n8. Relatório de nível crítico ")
+            print("\n9. Relatório de produtos próximo ao vencimento ")
             print("\n[ Opções ]")
             print("0. Sair")
 

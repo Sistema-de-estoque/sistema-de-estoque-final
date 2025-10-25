@@ -12,7 +12,7 @@ NOME_ARQUIVO_ESTOQUE = os.path.join('dados', 'estoque.csv')
 # Intervalo entre verificações (em segundos)
 INTERVALO_VERIFICACAO_SEGUNDOS = 2
 
-# Conjunto para rastrear CÓDIGOS de produtos já alertados (usar código é mais seguro que nome)
+# Conjunto para rastrear CÓDIGOS de produtos já alertados 
 produtos_alertados = set()
 
 # Lock para evitar leitura simultânea dos arquivos
